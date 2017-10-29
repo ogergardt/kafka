@@ -7,7 +7,8 @@ MAINTAINER ogergardt
 RUN \
   apk update
 RUN \
-  apk add \
+  apk add --no-cache \
+  wget \
   bash \
   curl \
   jq 
@@ -22,8 +23,6 @@ ENV PATH ${PATH}:${KAFKA_HOME}/bin
 
 ADD start.sh ${KAFKA_HOME}/bin/start.sh
 RUN chmod +x ${KAFKA_HOME}/bin/start.sh
-
-RUN apk add --no-cache wget bash
 
 ADD download.sh /tmp/download.sh
 RUN chmod a+x /tmp/download.sh \
