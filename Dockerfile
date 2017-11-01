@@ -25,7 +25,7 @@ RUN mkdir -p "$KAFKA_HOME"
 ADD download.sh /tmp/download.sh
 RUN chmod a+x /tmp/download.sh \
   && /tmp/download.sh \
-  && tar xfz /tmp/kafka_${SCALA_VERSION}-${KAFKA_VERSION}.tgz \
+  && tar xfz /tmp/kafka_${SCALA_VERSION}-${KAFKA_VERSION}.tgz -C /opt \
   && rm /tmp/kafka_${SCALA_VERSION}-${KAFKA_VERSION}.tgz \
   && chown -R root:root $KAFKA_HOME
 
