@@ -2,7 +2,7 @@
 
 FROM openjdk:8-jre-alpine
 
-MAINTAINER ogergardt
+MAINTAINER Oleksandr Gergardt <ogergardt@gmail.com>
 
 RUN \
   apk update
@@ -18,19 +18,19 @@ ARG SCALA_VERSION=2.12
 
 LABEL name="kafka" version=${KAFKA_VERSION}
 
-ENV KAFKA_HOME /opt/kafka
+ENV KAFKA_HOME /opt/kafka_${SCALA_VERSION}-${KAFKA_VERSION}
 ENV PATH ${PATH}:${KAFKA_HOME}/bin
-
-ADD start.sh ${KAFKA_HOME}/bin/start.sh
-RUN chmod +x ${KAFKA_HOME}/bin/start.sh
+RUN mkdir -p "$KAFKA_HOME"
 
 ADD download.sh /tmp/download.sh
 RUN chmod a+x /tmp/download.sh \
-  && sync && /tmp/download.sh \
-  && tar xfz /tmp/kafka_${SCALA_VERSION}-${KAFKA_VERSION}.tgz -C /opt \
+  && /tmp/download.sh \
+  && tar xfz /tmp/kafka_${SCALA_VERSION}-${KAFKA_VERSION}.tgz \
   && rm /tmp/kafka_${SCALA_VERSION}-${KAFKA_VERSION}.tgz \
-  && ln -s /opt/kafka_${SCALA_VERSION}-${KAFKA_VERSION} $KAFKA_HOME \
   && chown -R root:root $KAFKA_HOME
+
+ADD start.sh ${KAFKA_HOME}/bin/start.sh
+RUN chmod +x ${KAFKA_HOME}/bin/start.sh
 
 RUN addgroup -S kafka \
   && adduser -h /var/lib/kafka -G kafka -S -H -s /sbin/nologin kafka \
@@ -42,3 +42,5 @@ EXPOSE 9092
 VOLUME ["/var/lib/kafka", "/var/log/kafka"]
 
 ENTRYPOINT ["start.sh"]
+
+
